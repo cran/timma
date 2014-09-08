@@ -114,8 +114,10 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     #loo_prediction <- float$timma$prediction
     if(use == "observed"){
       loo_prediction <- y
-    }else{
+    }else if(use == "predicted"){
       loo_prediction <- float$timma$prediction
+    }else{
+      stop("use must be either observed or predicted")
     }
     
     one<-which(loo_prediction>0.5)

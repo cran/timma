@@ -32,7 +32,8 @@ drawGraph <- function(draw_data) {
     
     column_names <- dimnames(draw_data)[[2]]
     dimnames(draw_data)[[2]][length(column_names)] <- "SENS"
-    boolean <- eqmcc(draw_data, outcome = "SENS")
+    
+    boolean <- eqmcc(draw_data, outcome = "SENS",row.dom=F,omit=1)
     boolean$essential
     num_components <- length(boolean$essential)
     expressions <- sapply(boolean$essential, function(x) strsplit(x, "\\*"))
@@ -101,29 +102,20 @@ drawGraph <- function(draw_data) {
     #lines(c(start_line, start_line + margin), c(height_figure/2, height_figure/2), type = "l")  # ending
     dev.off()
     
-    # two terminal version
-    cat(c(),file="targetInhibitionNetwork.sif")
-    Terminals <- paste("T",1:2, sep="") # the number of joints for the SIF format
-    
-    # connecting the first compoonent with T1
-    for (j in expressions_compact[[1]]){
-      lines <- paste(c(Terminals[1],"xx",j), collapse="\t")
-      write(lines,file="targetInhibitionNetwork.sif", sep = "\n", append=T)
+    # two terminal version, output to cytoscape nnf file
+    cat(c(),file="targetInhibitionNetwork.nnf")
+    for (i in 1:num_components){
+      write(paste(c('TargetInhibitionNetwork',paste('M',i,sep="")),collapse="\t"),file="targetInhibitionNetwork.nnf",sep="\n",append=T)
     }
     
-    # connecting the last component with T2
-    for (j in expressions_compact[[num_components]]){
-      lines <- paste(c(Terminals[2],"xx",j), collapse="\t")
-      write(lines,file="targetInhibitionNetwork.sif", sep = "\n", append=T)
-    }
+    Terminals <- paste("T",1:2, sep="") # the number of terminals for the SIF format
     
-    # connecting the middle components
-    for (i in 1:(num_components-1)) {
+    for (i in 1:num_components){
       for (j in expressions_compact[[i]]){
-        for (k in expressions_compact[[i+1]]){
-          lines <- paste(c(j,"xx",k), collapse="\t")
-          write(lines,file="targetInhibitionNetwork.sif", sep = "\n", append=T)
-        }
+      lines1 <-paste(c(paste('M',i,sep=""),Terminals[1],"pp",j), collapse="\t")
+      lines2 <-paste(c(paste('M',i,sep=""),j,"pp",Terminals[2]), collapse="\t")
+      write(lines1,file="targetInhibitionNetwork.nnf",sep="\n",append=T)
+      write(lines2,file="targetInhibitionNetwork.nnf",sep="\n",append=T)
       }
     } 
     cat()
