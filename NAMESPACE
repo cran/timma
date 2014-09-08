@@ -1,0 +1,4 @@
+useDynLib(timma)
+import(Rcpp)
+import(QCA)
+exportPattern("^[[:alpha:]]+")
