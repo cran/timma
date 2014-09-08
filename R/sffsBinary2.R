@@ -78,7 +78,7 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
       }
       
       if(verbosity){
-        cat("Number of selected target: ", step, "MAE = ", J[step], "\n")
+        cat("Number of selected targets: ", step, "MAE = ", J[step], "\n")
       }
       
       
@@ -90,7 +90,7 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
           global_best_err = J[step]
           change <- 1
           if(verbosity){
-            cat("Best error:", global_best_err, "\n")
+            cat("Best MAE:", global_best_err, "\n")
           }
           
         } else {
@@ -115,7 +115,7 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
       ind1 <- which.min(err)
       k_set[ind1] <- 1
       if(verbosity){
-        cat("Inclusion target ", ind1, "MAE = ", dummy, "\n")
+        cat("Including target #", ind1, "MAE = ", dummy, "\n")
       }
       
       
@@ -138,7 +138,7 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
         # the new added kinase is not the least significant feature
         k_set[ind_worst] <- 0  # exclude the least significant feature
         if(verbosity){
-          cat("Exclusion target ", ind_worst, "MAE = ", worst_err, "\n")
+          cat("Excluding target #", ind_worst, "MAE = ", worst_err, "\n")
         }
         
       }
@@ -161,7 +161,7 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
           # if better result found !!J[step-1]!!
           k_set[ind_worst] <- 0
           if(verbosity){
-            cat("Continuing exclusion target ", ind_worst, "MAE = ", dummy, "\n")
+            cat("Continuing excluding target #", ind_worst, "MAE = ", dummy, "\n")
           }
           
         } else {
@@ -184,7 +184,9 @@ sffsBinary2 <- function(profile_data, sens, sp = 1, max_k = 5, loo = TRUE, new_i
   }
   
   k_selected <- which(k_set == 1)
-  timma <- timmaModel(profile_data[, k_selected], sens, loo)
+  profile_filtered <- unique(profile_data[, k_selected], MARGIN=2)
+  timma <- timmaModel(profile_filtered, sens, loo)
+  k_selected <- match(dimnames(profile_filtered)[[2]],dimnames(profile_data)[[2]])
   
   return(list(timma = timma, k_sel = k_selected))
 } 

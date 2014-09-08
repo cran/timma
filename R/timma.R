@@ -27,6 +27,8 @@
 #' @param verbosity a boolean value to decide if the information should be displayed. If it is TRUE, the information
 #' will be displayed while the model is running. Otherwise, the information will not be displayed. By default, it is
 #' FALSE.
+#' @param use When use = "observed", the true drug sensitivity data will be used for drawing target inhibition network.
+#' When use = "predicted", the predicted drug sensitivity data will be used for drawing target inhibition network.
 #' @return Three output files are saved as '.csv' files:
 #' \item{selectedTarget.csv}{ a matrix contains the selected target set and its inhibition configurations for each drug.
 #' The actual drug sensitivity and the predicted LOO sensitivity are listed as additional columns.}
@@ -48,7 +50,7 @@
 #' results<-timma(tyner_interaction_binary, median_sensitivity)
 #' }
 
-timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averaging = "one.sided", weighted = FALSE, verbosity = FALSE) {
+timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averaging = "one.sided", weighted = FALSE, verbosity = FALSE, use = "observed") {
   
   # get drug names
   drug_names <- dimnames(x)[[1]]
@@ -56,7 +58,7 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
   # get kinase names
   kinase_names <- dimnames(x)[[2]]
   
-  cat("----------------Running TIMMA model----------------------------- \n")
+  cat("----------------Start Running TIMMA----------------------------- \n")
   if (filtering == FALSE) {
     # sffs
     float<-sffs(x, y, sp, max_k, loo = TRUE, class, averaging, weighted, verbosity)
@@ -88,7 +90,7 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     profile_select <- rbind(select_kinase_names, profile_select)
   }
   
-  cat("----------------Save the selectedTargets file------------------- \n")
+  cat("----------------Saving selectedTargets.csv---------------------- \n")
   
   # write Timma
   if (class == 2) {
@@ -105,21 +107,31 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     timma[1:nrow(nc), (ncol(nr) + 1):timma_col] <- nc
     timma[(nrow(nc) + 1):timma_row, (ncol(nr) + 1):timma_col] <- float$timma$dummy
     write.table(timma, file = timma_file, sep = ",", col.names = FALSE, row.names = FALSE)
-    cat("----------------Save the predictedSensitivities file------------ \n")
+    cat("----------------Saving predictedSensitivities.csv--------------- \n")
     drug_comb_rank <- drugRank(profile_select, timma, y)
     write.table(drug_comb_rank, file = "predictedScoring.csv", sep = ",", row.names = FALSE)
-    cat("----------------Save the predictedScoring file------------------ \n")
-    one<-which(y>0.5)
-    zero<-which(y<=0.5)
-    SENS<-y
+    cat("----------------Saving predictedScoring.csv--------------------- \n")
+    #loo_prediction <- float$timma$prediction
+    if(use == "observed"){
+      loo_prediction <- y
+    }else{
+      loo_prediction <- float$timma$prediction
+    }
+    
+    one<-which(loo_prediction>0.5)
+    zero<-which(loo_prediction<=0.5)
+    SENS<-loo_prediction
     SENS[one]<-1
     SENS[zero]<-0
     profile_select <- x[, k_select]
     draw_data<-cbind(profile_select, SENS)
     drawGraph(draw_data)
-    cat("----------------Draw the target inhibition network-------------- \n")
+    cat("----------------Saving targetInhibitionNetwork.pdf-------------- \n")
+    cat("----------------Saving targetInhibitionNetwork.sif-------------- \n")
   }
   
+  current_dir <- getwd()
+  cat("Analysis finished. All the results are saved in", current_dir)
   
   # write ranking
   #if (sffs_model == "binary")

@@ -4,7 +4,8 @@
 \title{Main function for the timma package}
 \usage{
 timma(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2,
-  averaging = "one.sided", weighted = FALSE, verbosity = FALSE)
+  averaging = "one.sided", weighted = FALSE, verbosity = FALSE,
+  use = "observed")
 }
 \arguments{
 \item{x}{a drug-target interaction matrix. Row names are drug names and column names are target names.}
@@ -40,6 +41,9 @@ sets will be more weighted in the final predictions.}
 \item{verbosity}{a boolean value to decide if the information should be displayed. If it is TRUE, the information
 will be displayed while the model is running. Otherwise, the information will not be displayed. By default, it is
 FALSE.}
+
+\item{use}{When use = "observed", the true drug sensitivity data will be used for drawing target inhibition network.
+When use = "predicted", the predicted drug sensitivity data will be used for drawing target inhibition network.}
 }
 \value{
 Three output files are saved as '.csv' files:

@@ -16,10 +16,12 @@ An image of the target inhibition network.
 A function to draw the target inhibition network.
 }
 \examples{
+\dontrun{
 data(tyner_interaction_binary)
 data(tyner_sensitivity)
-x<-data.frame(tyner_interaction_binary[, 1:6])
 y<-tyner_sensitivity[,1]
+k_selected<-sffs(tyner_interaction_binary, y)$k_sel
+x<-data.frame(tyner_interaction_binary[, k_selected])
 #binarize the sensitivity data
 one<-which(y>0.5)
 zero<-which(y<=0.5)
@@ -29,8 +31,9 @@ SENS[zero]<-0
 draw_data<-cbind(x, SENS)
 drawGraph(draw_data)
 }
+}
 \author{
-Jing Tang \email{jing.tang@helsinki.fi}
+Jing Tang \email{jing.tang@helsinki.fi}, Liye He \email{liye.he@helsinki.fi}
 }
 \references{
 Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T.

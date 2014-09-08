@@ -171,6 +171,9 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
     colnames(comp3)[2] = "Target1"
     colnames(comp4)[2] = "Target2"
     score_drug_comb = cbind(comp1, comp2, comp3, comp4)
+    score_drug_comb = score_drug_comb[,c(2,3,9,12,13,14,16,18)]
+    colnames(score_drug_comb) = c("Drug1", "Drug2", "Sensitivity", "Synergy.add", "Synergy.multi", "Synergy.highest", 
+    "Target1", "Target2")
     return(score_drug_comb)
 }
  
