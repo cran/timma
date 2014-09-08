@@ -44,8 +44,13 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
     len2=2^(floor(ntargets/2))
     len3=floor(ntargets/2)
     len4=2^(ntargets-floor(ntargets/2))
-    row_target = apply(timma[c((1 + len1):(len2 + len1)), c(1:len3)], 2, as.character)
-    col_target = apply(timma[c(1:len1), c((1 + len3):(len4 + len3))], 2, as.character)
+    
+    if(len3==1) row_target = as.matrix(timma[c((1 + len1):(len2 + len1)),1])
+    else row_target = apply(timma[c((1 + len1):(len2 + len1)), c(1:len3)], 2, as.character)
+    
+    if(len1==1) col_target = as.matrix(timma[1, c((1 + len3):(len4 + len3))])
+    else col_target = apply(timma[c(1:len1), c((1 + len3):(len4 + len3))], 2, as.character)
+    
     efficacy_mat = apply(timma[c((1 + len1):(len2 + len1)), c((1 + len3):(len4 + len3))], 2, as.numeric)
     efficacy_mat = efficacy_mat/max(efficacy_mat)  # normalize the efficacy into range [0 1]
     efficacy_vec = matrix(efficacy_mat, length(c(efficacy_mat)), 1)

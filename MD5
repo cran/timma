@@ -1,4 +1,4 @@
-662f5ce2745c9c9c20226e944304e70b *DESCRIPTION
+ed605c1a60da90a429ede374195463b8 *DESCRIPTION
 91ce48bc12c2669f76a962c72f69488d *NAMESPACE
 4aa177e4db31e6c31c133c9268492775 *R/RcppExports.R
 d65df34b88756ac5fb961e5b0b87a74f *R/binarizeDrugTargets.R
@@ -7,7 +7,7 @@ d65df34b88756ac5fb961e5b0b87a74f *R/binarizeDrugTargets.R
 6b2f8d91ef449bf51f38272f354adc44 *R/davis.R
 b7b56874a13203258492ae59cb581af5 *R/dec2bin.R
 473a90696c631dcef0a11769dc846715 *R/drawGraph.R
-cb2a91db74763571c0607d1cbdd0135f *R/drugRank.R
+2f67b482b6ccc760a76711884d645c2f *R/drugRank.R
 eb049ed3ef186506e7cd91abde2d1dab *R/findSameCol.R
 75f0c3d3ff84ba6427b7ee98e55a9638 *R/findSameSet.R
 1cd3b4f865379fc815c1dd8c0c503487 *R/floating2.R
@@ -33,7 +33,7 @@ b83eea770d2bad32e313a3c69f7336bf *R/sffsCategory.R
 05a8c3b45113451c57a395039ac06e12 *R/sffsCategory1.R
 b206799fa90e8efdebb32415cbf3e1aa *R/sffsCategoryWeighted.R
 a8ba991a100297681accfd7032ad8691 *R/sffsCategoryWeighted1.R
-304fa540f29523deb90feaefccb5885f *R/timma.R
+7837094454d2426158296662c16cc0a0 *R/timma.R
 569c6d41f712c9e0acd10719543958af *R/timmaBinary.R
 e8b0fc7a8499a1b004c02b38aa88cd61 *R/timmaBinary1.R
 a1c0be671773f1d04c26f2cb89fc1b13 *R/timmaCategory.R
@@ -47,6 +47,7 @@ f8f2bb03be030ff7a8e5bf2c9b0d44d8 *R/timmaSearchBinary.R
 4b8c59ea9b6c5ab0eea532a5214b5b9d *R/tyner_interaction_binary.R
 d851fa5296bc6fc84414e672f7ccd560 *R/tyner_interaction_multiclass.R
 fe83cf59b3472007058669fc0aeeb08f *R/tyner_sensitivity.R
+e0db684af6e276a193046481d0f385a2 *build/vignette.rds
 41a9f2b4ee9015900a8b167afa166dbb *data/ci.rda
 d94c5e6893876c3c83bc8c1203bbd12e *data/datalist
 79f81905365f1e7507101ffbfaf1d8ac *data/davis.rda
@@ -58,6 +59,8 @@ d94c5e6893876c3c83bc8c1203bbd12e *data/datalist
 5d672f26390d9eeb3f2734b4cb897411 *data/tyner_interaction_binary.rda
 bcf5d1747622b7bbc0e21b5cc7cc397d *data/tyner_interaction_multiclass.rda
 714e5f623ae6e6e3b99c8288e7c1a7ea *data/tyner_sensitivity.rda
+385bfbf6367bcd07cb4f7b342385cf3e *inst/doc/timma.pdf
+f94594b9828684a8831f2cfa6d5ed566 *inst/doc/timma.pdf.asis
 4f61e36989c93c3b0cf991a407042f2f *man/binarizeDrugTargets.Rd
 9814cab3ccb8ad752ab08bafb42f2189 *man/binarySet.Rd
 6695fdaa48bca8f628a4306af0fbb0e6 *man/ci.Rd
@@ -115,3 +118,4 @@ e47d0ba80c6cbcab89a0843303245696 *man/tyner_interaction_binary.Rd
 8d46d69896a1f1d31ed76035a0e49d67 *src/Makevars.win
 ab4181539819a7944a209b9170af7f49 *src/RcppExports.cpp
 16289066668721911a3ea7955df61896 *src/max_min.cpp
+f94594b9828684a8831f2cfa6d5ed566 *vignettes/timma.pdf.asis

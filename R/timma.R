@@ -129,7 +129,7 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     draw_data<-cbind(profile_select, SENS)
     drawGraph(draw_data)
     cat("----------------Saving targetInhibitionNetwork.pdf-------------- \n")
-    cat("----------------Saving targetInhibitionNetwork.sif-------------- \n")
+    cat("----------------Saving targetInhibitionNetwork.nnf-------------- \n")
   }
   
   current_dir <- getwd()
