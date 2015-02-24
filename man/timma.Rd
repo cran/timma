@@ -47,15 +47,7 @@ FALSE.}
 When use = "predicted", the predicted drug sensitivity data will be used for drawing target inhibition network.}
 }
 \value{
-Three output files are saved as '.csv' files:
-\item{selectedTarget.csv}{ a matrix contains the selected target set and its inhibition configurations for each drug.
-The actual drug sensitivity and the predicted LOO sensitivity are listed as additional columns.}
-\item{predictedSensitivities.csv}{a matrix of predicted sensitivities for all the possible target inhibition configurations
- derived using the model construction algorithm.}
-\item{predictedScoring.csv}{a list of drug combinations ranked by their synergy scores, currently derived from three synergy models:
-(a) Multiplicative; (b) Additive; (c) Highest single agent.}
-
-A target inhibition network is constructed and drawn.
+an R image of the input and output data.
 }
 \description{
 Target inhibition inference using maximization and minimization averaging
@@ -69,7 +61,7 @@ results<-timma(tyner_interaction_binary, median_sensitivity)
 }
 }
 \author{
-Liye He \email{liye.he@helsinki.fi}
+Jing Tang \email{jing.tang@helsinki.fi}
 }
 \references{
 Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T.

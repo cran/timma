@@ -2,10 +2,10 @@
 #' 
 #' A function to draw the target inhibition network.
 #' 
-#' @param draw_data a data frame combines drug-target interaction data with drug sensitivity. The column names
+#' @param draw_data a data frame combining drug-target interaction data with drug sensitivity. The column names
 #' must be upper case.
-#' @return An image of the target inhibition network.
-#' @author Jing Tang \email{jing.tang@@helsinki.fi}, Liye He \email{liye.he@@helsinki.fi}
+#' @return An image in both pdf and nnf format of the estimated target inhibition network.
+#' @author Jing Tang \email{jing.tang@@helsinki.fi}
 #' @references Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T. 
 #' Target inhibition networks: predicting selective combinations of druggable targets to block cancer 
 #' survival pathways. PLOS Computational Biology 2013; 9: e1003226.
@@ -28,13 +28,14 @@
 
 drawGraph <- function(draw_data) {
     
-    # column names must be upper case
-    
-    column_names <- dimnames(draw_data)[[2]]
+    # column names must be upper case and contains only letters!
+    column_names_actual <- dimnames(draw_data)[[2]]
+    column_names <- unlist(lapply(seq(1:length(column_names_actual)),function(i) paste(LETTERS[i],LETTERS[i],sep="")))
+    colnames(draw_data) = column_names
     dimnames(draw_data)[[2]][length(column_names)] <- "SENS"
     
     boolean <- eqmcc(draw_data, outcome = "SENS",row.dom=F,omit=1)
-    boolean$essential
+    #boolean$essential
     num_components <- length(boolean$essential)
     expressions <- sapply(boolean$essential, function(x) strsplit(x, "\\*"))
     
@@ -52,22 +53,31 @@ drawGraph <- function(draw_data) {
         }
         
     }
-    num_components <- num - 1
+    
+    # remove duplicated compact expressions
+    expressions_compact = expressions_compact[which(duplicated(expressions_compact)==F)]
+    
+    # change the labels back to the target names
+    expressions_compact = lapply(expressions_compact,function(i) column_names_actual[grep(paste(i,collapse="|"),column_names)])
+    
+    num_components <- length(expressions_compact)
     height_components <- lapply(expressions_compact, length)
     
-    seg <- 1
-    seg_in <- 0.2
-    margin <- 0.2
+    
+    seg <- 1 # the width for one component
+    seg_in <- 0.2 # the width of the small line within the components
+    seg_out <-0.2 # the width between the components
+    scale = mean(unlist(lapply(expressions_compact,function(x) max(nchar(x))/3)))
+    
     height_figure <- max(unlist(height_components))
-    width_figure <- num_components * (1 + max(nchar(unlist(height_components)))*0.4)
-    #width_figure <- num_components * (1 + margin)
+    width_figure <- num_components * (seg*scale + seg_out)
     
     # drawing
     dummy <- 0
-    pdf(file="targetInhibitionNetwork.pdf", width=12, height=12)
-    plot(dummy, dummy, type = "n", axes = FALSE, ann = FALSE, xlim = c(1, width_figure + 1), ylim = c(0, height_figure))  # no axes, no labels
-    lines(c(1, 1 + margin), c(height_figure/2, height_figure/2), type = "l")  # starting
-    start_line <- 1 + margin
+    pdf(file="targetInhibitionNetwork.pdf", width=width_figure, height=height_figure,pointsize=12)
+    par(mar=c(0,0,0,0))
+    plot(dummy, dummy, type = "n", axes = FALSE, ann = FALSE, xlim = c(0, width_figure), ylim = c(0, height_figure))  # no axes, no labels
+    start_line <- seg_in
     
     for (i in 1:num_components) {
         leg <- height_components[[i]]
@@ -75,31 +85,28 @@ drawGraph <- function(draw_data) {
         for(j in 1:leg){
           len_target <- c(len_target, nchar(expressions_compact[[i]][j]))
         }
-        max_len <- max(len_target)
-        # y = vector(mode='numeric',length = leg)
-        y0 <- height_figure/2 - (leg - 1)/2
-        y0 <- seq(y0, y0 + leg - 1)
-        #x0 <- rep(i * (seg + margin), leg)
+        max_len <- max(len_target) # the length of the longest target names in the component
+
+        y0 <- height_figure/2 - (leg - 1)/2 # y for the lowest target
+        y0 <- seq(y0, y0 + leg - 1) # y for the other targets
+
         x0 <- rep(start_line, leg)
-        #x1 <- rep(i * (seg + margin) + seg_in, leg)
-        x1 <- rep(x0+seg_in, leg)
+        x1 <- rep(start_line+seg_in, leg)
         y1 <- y0
-        x2 <- x1 + seg_in*max_len/4*num/3
-        #x2 <- rep(1.6, leg)
+        x2 <- x1 + (seg - 2*seg_in)*max_len/3
         x3 <- x2 + seg_in
-        #x3 <- x0 + seg - margin
+        
         segments(x0, y0, x1, y1)
         segments(x2, y0, x3, y1)
         lines(x0[c(1, 1)], y0[c(1, leg)], type = "l")
         lines(x3[c(1, 1)], y0[c(1, leg)], type = "l")
-        lines(c(x3[1], x3[1] + margin), c(height_figure/2, height_figure/2), type = "l")
-        start_line <- x3[1] + margin
+        lines(c(x3[1], x3[1] + seg_out), c(height_figure/2, height_figure/2), type = "l")
+        
+        start_line <- x3[1] + seg_out
         
         # write names
         text(x1, y0, labels = expressions_compact[[i]], pos = 4)
     }
-    
-    #lines(c(start_line, start_line + margin), c(height_figure/2, height_figure/2), type = "l")  # ending
     dev.off()
     
     # two terminal version, output to cytoscape nnf file
@@ -119,5 +126,4 @@ drawGraph <- function(draw_data) {
       }
     } 
     cat()
-    #dev.off()
 } 

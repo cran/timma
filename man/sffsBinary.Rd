@@ -43,7 +43,7 @@ results<-sffsBinary(tyner_interaction_binary, tyner_sensitivity[, 1], max_k = 2)
 }
 }
 \author{
-Liye He \email{liye.he@helsinki.fi}
+Jing Tang \email{jing.tang@helsinki.fi}
 }
 \references{
 Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T.

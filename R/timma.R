@@ -29,19 +29,12 @@
 #' FALSE.
 #' @param use When use = "observed", the true drug sensitivity data will be used for drawing target inhibition network.
 #' When use = "predicted", the predicted drug sensitivity data will be used for drawing target inhibition network.
-#' @return Three output files are saved as '.csv' files:
-#' \item{selectedTarget.csv}{ a matrix contains the selected target set and its inhibition configurations for each drug.
-#' The actual drug sensitivity and the predicted LOO sensitivity are listed as additional columns.}
-#' \item{predictedSensitivities.csv}{a matrix of predicted sensitivities for all the possible target inhibition configurations
-#'  derived using the model construction algorithm.}
-#' \item{predictedScoring.csv}{a list of drug combinations ranked by their synergy scores, currently derived from three synergy models: 
-#' (a) Multiplicative; (b) Additive; (c) Highest single agent.}
-#' 
-#' A target inhibition network is constructed and drawn. 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @return an R image of the input and output data. 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @references Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T. 
 #' Target inhibition networks: predicting selective combinations of druggable targets to block cancer 
 #' survival pathways. PLOS Computational Biology 2013; 9: e1003226.
+#' 
 #' @examples 
 #' \dontrun{
 #' data(tyner_interaction_binary)
@@ -71,8 +64,8 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
   error <- mean(err)
   RMSE <- sqrt(mean(err^2))
   RMSE_baseline <- sqrt(mean((y - median(y))^2))
-  # write selected Kinase file
   
+  # write selected Kinase file
   x <- data.frame(x)
   k_select <- float$k_sel
   select_kinase_names <- findSameSet(x, k_select, kinase_names)
@@ -89,7 +82,6 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
   } else {
     profile_select <- rbind(select_kinase_names, profile_select)
   }
-  
   cat("----------------Saving selectedTargets.csv---------------------- \n")
   
   # write Timma
@@ -108,9 +100,19 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     timma[(nrow(nc) + 1):timma_row, (ncol(nr) + 1):timma_col] <- float$timma$dummy
     write.table(timma, file = timma_file, sep = ",", col.names = FALSE, row.names = FALSE)
     cat("----------------Saving predictedSensitivities.csv--------------- \n")
+    
+    target_comb_rank <- targetRank(profile_select, timma)
+    write.table(target_comb_rank, file = "predictedTargetScoring.csv",sep=",",row.names = FALSE)
+    cat("----------------Saving predictedTargetScoring.csv--------------------- \n")
+    
     drug_comb_rank <- drugRank(profile_select, timma, y)
-    write.table(drug_comb_rank, file = "predictedScoring.csv", sep = ",", row.names = FALSE)
-    cat("----------------Saving predictedScoring.csv--------------------- \n")
+    write.table(drug_comb_rank, file = "predictedDrugScoring.csv", sep = ",", row.names = FALSE)
+    cat("----------------Saving predictedDrugScoring.csv--------------------- \n")
+    
+    # write the R image
+    save(x,profile_select, timma, y, file="result.RData")
+    cat("----------------Saving result.RData---------------------- \n")
+    
     #loo_prediction <- float$timma$prediction
     if(use == "observed"){
       loo_prediction <- y
@@ -125,7 +127,7 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
     SENS<-loo_prediction
     SENS[one]<-1
     SENS[zero]<-0
-    profile_select <- x[, k_select]
+   
     draw_data<-cbind(profile_select, SENS)
     drawGraph(draw_data)
     cat("----------------Saving targetInhibitionNetwork.pdf-------------- \n")
@@ -134,14 +136,6 @@ timma <- function(x, y, sp = 1, max_k = 5, filtering = FALSE, class = 2, averagi
   
   current_dir <- getwd()
   cat("Analysis finished. All the results are saved in", current_dir)
-  
-  # write ranking
-  #if (sffs_model == "binary")
-  #rank_file <- paste("Rank", model, ".csv", sep = "")
-  #drug_combo <- drugCom(x[, k_select], y, float$timma$dummy, select_kinase_names, drug_names)
-  #write.table(drug_combo, file = rank_file, sep = ",", row.names = F)
-  #cat("----------------print combination ranking file------------------ \n")
-  
-  # draw the target inhibition network
-  
+
+  return(list(profile_input = x, profile_select = profile_select, prediction = timma, sensitivity = y))
 } 

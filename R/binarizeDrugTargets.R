@@ -10,7 +10,7 @@
 #' @param threshold a string to specify the threshold.
 #' @return A matrix contains the binarized drug target data. 
 #' 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @examples 
 #' data(davis)
 #' profile<-binarizeDrugTargets(davis, method="drug-specific", threshold="50fold")
@@ -38,7 +38,7 @@ binarizeDrugTargets<-function(profile, method="universal", threshold="100nM"){
     }else{stop("undefined threshold for the universal method.")}
   }else if(method=="drug-specific"){
     if(threshold=="10fold"){
-      for(i in 1:nrow(profile)){
+      for(i in seq_len(nrow(profile))){
         # find the min kd
         min_kd <- min(profile[i,], na.rm=TRUE)
         # threshold
@@ -50,7 +50,7 @@ binarizeDrugTargets<-function(profile, method="universal", threshold="100nM"){
         profile[i, zeros] <- 0
       }
     }else if(threshold=="50fold"){
-      for(i in 1:nrow(profile)){
+      for(i in seq_len(nrow(profile))){
         # find the min kd
         min_kd <- min(profile[i,], na.rm=TRUE)
         # threshold
@@ -62,7 +62,7 @@ binarizeDrugTargets<-function(profile, method="universal", threshold="100nM"){
         profile[i, zeros] <- 0
       }
     }else if(threshold=="100fold"){
-      for(i in 1:nrow(profile)){
+      for(i in seq_len(nrow(profile))){
         # find the min kd
         min_kd <- min(profile[i,], na.rm=TRUE)
         # threshold

@@ -19,7 +19,7 @@
 #' \item{timma}{a list contains: the predicted efficacy matrix, prediction error and predicted drug sensitivity}
 #' \item{k_sel}{the indexes for selected targets}
 #' 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @references Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T. 
 #' Target inhibition networks: predicting selective combinations of druggable targets to block cancer 
 #' survival pathways. PLOS Computational Biology 2013; 9: e1003226.

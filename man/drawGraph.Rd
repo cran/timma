@@ -7,11 +7,11 @@
 drawGraph(draw_data)
 }
 \arguments{
-\item{draw_data}{a data frame combines drug-target interaction data with drug sensitivity. The column names
+\item{draw_data}{a data frame combining drug-target interaction data with drug sensitivity. The column names
 must be upper case.}
 }
 \value{
-An image of the target inhibition network.
+An image in both pdf and nnf format of the estimated target inhibition network.
 }
 \description{
 A function to draw the target inhibition network.
@@ -34,7 +34,7 @@ drawGraph(draw_data)
 }
 }
 \author{
-Jing Tang \email{jing.tang@helsinki.fi}, Liye He \email{liye.he@helsinki.fi}
+Jing Tang \email{jing.tang@helsinki.fi}
 }
 \references{
 Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T.

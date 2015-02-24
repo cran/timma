@@ -24,7 +24,7 @@
 #' @details The major difference between original and modified averaging method is the averaging methods for the case where the minimization and maximization rules are not simultaneously satisfied. 
 #' For example, for a queried target set there are supersets but not subsets in the training data, the original algorithm will take the prediction from these supersets data using the minimization rule. 
 #' However, the modified algorithm will further adjust the prediction using the average between such a prediction and 0. 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @examples 
 #' \dontrun{
 #' data(tyner_interaction_multiclass)

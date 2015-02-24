@@ -8,7 +8,7 @@
 #' it is scaled by 1/(1+exp(-1/IC50)). If it is "hyperbolic", it is scaled by tanh(1/IC50).
 #' @return A vector contains the normalized drug sensitivity data.
 #' 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @examples 
 #' data(tyner_sensitivity)
 #' normalizedSensitivity<-normalizeSensitivity(tyner_sensitivity[,1])

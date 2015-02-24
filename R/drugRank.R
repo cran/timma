@@ -7,7 +7,7 @@
 #' @param sens the drug sensitivity vector.
 #' 
 #' @return a matrix contains the information about the list of drug combinations ranked by their synergy scores. 
-#' @author Liye He \email{liye.he@@helsinki.fi} 
+#' @author Jing Tang \email{jing.tang@@helsinki.fi} 
 #' @references Tang J, Karhinen L, Xu T, Szwajda A, Yadav B, Wennerberg K, Aittokallio T. 
 #' Target inhibition networks: predicting selective combinations of druggable targets to block cancer 
 #' survival pathways. PLOS Computational Biology 2013; 9: e1003226.
@@ -45,14 +45,11 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
     len3=floor(ntargets/2)
     len4=2^(ntargets-floor(ntargets/2))
     
-    if(len3==1) row_target = as.matrix(timma[c((1 + len1):(len2 + len1)),1])
-    else row_target = apply(timma[c((1 + len1):(len2 + len1)), c(1:len3)], 2, as.character)
-    
-    if(len1==1) col_target = as.matrix(timma[1, c((1 + len3):(len4 + len3))])
-    else col_target = apply(timma[c(1:len1), c((1 + len3):(len4 + len3))], 2, as.character)
+    if(len3==1) row_target = matrix(timma[c((1 + len1):(len2 + len1)),1],ncol=1) else row_target = apply(timma[c((1 + len1):(len2 + len1)), c(1:len3)], 2, as.character)
+    if(len1==1) col_target = matrix(timma[1, c((1 + len3):(len4 + len3))],nrow=1) else col_target = apply(timma[c(1:len1), c((1 + len3):(len4 + len3))], 2, as.character)
     
     efficacy_mat = apply(timma[c((1 + len1):(len2 + len1)), c((1 + len3):(len4 + len3))], 2, as.numeric)
-    efficacy_mat = efficacy_mat/max(efficacy_mat)  # normalize the efficacy into range [0 1]
+    # efficacy_mat = efficacy_mat/max(efficacy_mat)  # normalize the efficacy into range [0 1]
     efficacy_vec = matrix(efficacy_mat, length(c(efficacy_mat)), 1)
     
     # identical targets separated by '/'.  Replace ';' with '/' in timma1.csv Replace ';' with '/' in
@@ -62,8 +59,9 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
     row_target = gsub(";", "/", row_target)
     col_target = gsub(";", "/", col_target)
     
-    names_mat = mat.or.vec(dim(row_target)[1], dim(col_target)[2])  # target combinations
-    number_mat = mat.or.vec(dim(row_target)[1], dim(col_target)[2])  # number of target nodes in the combination
+    names_mat = matrix(0,dim(row_target)[1], dim(col_target)[2])  # target combinations
+    number_mat = matrix(0,dim(row_target)[1], dim(col_target)[2])  # number of target nodes in the combination
+    
     for (i in 1:dim(row_target)[1]) {
         for (j in 1:dim(col_target)[2]) {
             str1 = paste(paste(row_target[i, ], collapse = " "), paste(col_target[, j], collapse = " "), collapse = "", 
@@ -87,12 +85,13 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
     data_pairwise = data_target[which(data_target$Number == 2), ]
     
     
-    single_inhibition = mat.or.vec(dim(data_pairwise)[1], 5)
+    single_inhibition = matrix(0,dim(data_pairwise)[1], 5)
     colnames(single_inhibition) = c("timma1", "timma2", "timma.add", "timma.multi", "timma.highest")
     for (i in 1:dim(data_pairwise)[1]) {
         pair = data_pairwise$Gene[i]
         pair_name = unlist(strsplit(as.character(pair), ";"))
-        index = lapply(pair_name, function(x) grep(x, data_single$Gene, fixed = TRUE))
+        # index = lapply(pair_name, function(x) grep(x, data_single$Gene, fixed = TRUE))
+        index = lapply(pair_name, function(x) which(data_single$Gene==x))
         timma1 = data_single$timma[unlist(index[1])]
         timma2 = data_single$timma[unlist(index[2])]
         timma.add = data_pairwise$timma[i] - timma1 - timma2
@@ -127,8 +126,10 @@ drugRank <- function(profile_select, predicted_matrix, sens) {
         pair_str = strsplit(as.character(pair), ";")[[1]]
         gene1 = pair_str[1]
         gene2 = pair_str[2]
-        drug1_index = grep(gene1, table_drug$Gene, fixed = TRUE)  # indices of drugs that are targeting gene1
-        drug2_index = grep(gene2, table_drug$Gene, fixed = TRUE)  # indices of drugs that are targeting gene2
+        # drug1_index = grep(gene1, table_drug$Gene, fixed = TRUE)  # indices of drugs that are targeting gene1
+        drug1_index = which(table_drug$Gene==gene1)
+        # drug2_index = grep(gene2, table_drug$Gene, fixed = TRUE)  # indices of drugs that are targeting gene2
+        drug2_index = which(table_drug$Gene==gene2)
         # drugs that are targeting gene1
         drug1 = table_drug$Drug[drug1_index]
         # drugs that are targeting gene2

@@ -46,6 +46,6 @@ results<-sffsCategory(tyner_interaction_multiclass, tyner_sensitivity[, 1], max_
 }
 }
 \author{
-Liye He \email{liye.he@helsinki.fi}
+Jing Tang \email{jing.tang@helsinki.fi}
 }
 
